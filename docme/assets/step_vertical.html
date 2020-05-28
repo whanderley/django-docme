@@ -1,0 +1,18 @@
+<div class="row step">
+    <div class="col-12"><img src={{ step_screenshot }} class="img-fluid rounded" /></div>
+    <div class="col-12">
+        <span class="align-middle">
+            <p class=title>{{ step.capitalized_name }}</p>
+            <p class="step-description">{{ step.text or ' ' }}</p>
+            {% if step.with_form_example %}
+                <ul>
+                    {% for dados in step.table %}
+                        <li>
+                            {{ dados.cells[0] }}
+                        </li>
+                    {% endfor %}     
+                </ul>
+            {% endif %}
+        </span>
+    </div>
+</div>

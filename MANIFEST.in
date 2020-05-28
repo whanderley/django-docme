@@ -1,0 +1,3 @@
+recursive-include docme/assets *
+recursive-include docme/static *
+recursive-include docme/templates *

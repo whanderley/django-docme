@@ -1,0 +1,212 @@
+<style>
+    .docme_slider {
+        background-color: #FFF;
+        width: 50%;
+        z-index: 1000;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        margin: auto;
+        padding: 20px;
+        -webkit-box-shadow: 0px 0px 5px 1px rgba(0,0,0,0.75);
+        -moz-box-shadow: 0px 0px 5px 1px rgba(0,0,0,0.75);
+        box-shadow: 0px 0px 5px 1px rgba(0,0,0,0.75);
+    }
+    #bug-form-modal {
+        background-color: #FFF;
+        width: 50%;
+        z-index: 1500;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        margin: auto;
+        padding: 20px;
+        visibility: hidden;
+        -webkit-box-shadow: 0px 0px 5px 1px rgba(0,0,0,0.75);
+        -moz-box-shadow: 0px 0px 5px 1px rgba(0,0,0,0.75);
+        box-shadow: 0px 0px 5px 1px rgba(0,0,0,0.75);
+    }
+    .close-button {
+        border: #000 1px solid;
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        padding: 5px;
+        cursor: pointer;
+    }
+    p {
+        max-width: 100%;
+    }
+
+    .docme_slider_wrap {
+        overflow: hidden;
+    }
+
+    .slide {
+        width: 100%;
+        display: inline-block;
+
+        text-align: center;
+    }
+
+    .buttons {
+        text-align: center;
+        margin-top: 40px;
+    }
+    .buttons button {
+        display: inline;
+        background-color #444;
+        border-radius: 5px;
+    }
+    .paginator {
+        display: inline;
+    }
+    .content {
+        will-change: transform;
+        white-space: nowrap;
+        transition: transform 0.3s;
+    }
+    .pagin-tracker {
+        display: inline;
+    }
+    .pagin-tracker.active {
+        color: red;
+    }
+    .examples-list ul li {
+        text-align: left;
+    }
+    .question-icon {
+        width: 5%;
+        z-index: 500;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        margin: auto;
+        cursor: pointer;
+        background: #fff;
+        padding: 10px;
+        border-radius: 5px;
+        -webkit-box-shadow: 0px 0px 5px 1px rgba(0,0,0,0.75);
+        -moz-box-shadow: 0px 0px 5px 1px rgba(0,0,0,0.75);
+        box-shadow: 0px 0px 5px 1px rgba(0,0,0,0.75);
+    }
+    .bug-icon {
+        border: #000 1px solid;
+        position: absolute;
+        top: 5px;
+        left: 5px;
+        padding: 5px;
+        width: 5%;
+        cursor: pointer;
+    }
+    .bug-icon img {
+        width: 100%;
+    }
+</style>
+{% load static %}
+<img class="question-icon" src={% static "docme/question.png" %}>
+<link rel="stylesheet" href={% static "docme/animate.css" %} />
+<div id="docme_slider" class="docme_slider animate__animated animate__slideInDown">
+    <span class="bug-icon" ><img src={% static "docme/bug.png" %}></span>
+    <span class="close-button">Close</span>
+    <div class="docme_slider_wrap">
+        <div class="content" style="transform: translate(-100%);" data-active="0">
+        </div>
+    </div>
+    <div class="buttons">
+        <button name="prev">Prev</button>
+        <div class="paginator">
+        </div>
+        <button name="next">Next</button>
+    </div>
+</div>
+<div id="bug-form-modal" class="docme_slider animate__animated">
+    <form action="#" id="usrform">
+        Observacao: <input type="text" name="obs">
+        <input type="submit" id="salvar">
+    </form>
+</div>
+
+<script>
+    var app = localStorage.getItem("app");
+    var feature_name = localStorage.getItem("feature_name");
+    var scenario_name = localStorage.getItem("scenario_name");
+    var current_path = window.location.href.replace(window.location.origin, '');
+    $.get("/docme/get_steps", { app: app, feature_name: feature_name,
+                                scenario_name: scenario_name, current_path: current_path })
+            .done(function (data) { 
+                loxa = data
+                var slide_content = $(".docme_slider_wrap .content");
+                slide_content.html('');
+                $.each(data['steps'], function (index, steps) {
+                    slide_content.append(
+                        "<div class='slide'><p><h4>" + steps.title + "</h4><br/><p>" + steps.description + "</p><br/><p class=examples-list>" + steps.examples + "</p></p></div>")
+                    $(".paginator").append("<div class='pagin-tracker'>" + (index + 1) + "</div>")
+                    start_documentation();
+                });
+            });
+    $(".close-button").click(function() {
+        $("#docme_slider").removeClass("animate__slideInDown").addClass("animate__slideOutUp");
+    });
+    $(".question-icon").click(function () {
+        $("#docme_slider").removeClass("animate__slideOutUp").addClass("animate__slideInDown");
+    });
+    $(".bug-icon").click(function () {
+        $("#docme_slider").removeClass("animate__slideInDown").addClass("animate__slideOutUp");
+        $("#bug-form-modal").css("visibility", "visible");
+        $("#bug-form-modal").removeClass("animate__slideOutUp").addClass("animate__slideInDown");
+    });
+    function start_documentation(){
+        const docme_slider = document.getElementById('docme_slider');
+        const docme_sliderWrap = docme_slider.querySelector('.docme_slider_wrap');
+        const docme_sliderContent = docme_sliderWrap.querySelector('.content');
+        const docme_sliderButtons = docme_slider.querySelector('.buttons');
+        const buttonPrev = docme_sliderButtons.querySelector('button[name="prev"]');
+        const buttonNext = docme_sliderButtons.querySelector('button[name="next"]');
+        const pages = Array.from(docme_slider.querySelectorAll('.pagin-tracker'));
+        const pagesCount = pages.length;
+        const slidesCount = docme_sliderContent.querySelectorAll('.slide').length;
+
+        let activeIndex = docme_sliderContent.getAttribute('data-active');
+
+        const updatePaginator = () => {
+            for (let i = 0; i < pagesCount; i++) {
+                pages[i].classList.remove('active');
+            }
+
+            if (pages[activeIndex]) {
+                pages[activeIndex].classList.add('active');
+            }
+        };
+
+        const applyStyle = () => {
+            docme_sliderContent.setAttribute('data-active', activeIndex);
+            docme_sliderContent.style.cssText = `transform: translate(-${activeIndex * 100}%);`;
+
+            updatePaginator();
+        };
+
+        buttonPrev.addEventListener('click', () => {
+            if (activeIndex > 0) {
+                activeIndex--;
+
+                applyStyle();
+            }
+        }, false);
+
+        buttonNext.addEventListener('click', () => {
+            if (activeIndex < slidesCount - 1) {
+                activeIndex++;
+
+                applyStyle();
+            }
+        }, false);
+        activeIndex = 0;
+
+        applyStyle();
+    }
+        
+</script>

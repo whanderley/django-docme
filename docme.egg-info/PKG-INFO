@@ -1,0 +1,11 @@
+Metadata-Version: 1.0
+Name: docme
+Version: 0.1.39
+Summary: Auto doc generator for behave-django.
+Home-page: UNKNOWN
+Author: Whanderley Souza Freitas
+Author-email: whanderley.souza@iff.edu.br
+License: LGPLv3
+Description: Auto doc generator for behave-django.
+Keywords: behave django BDD autodoc documentation
+Platform: UNKNOWN

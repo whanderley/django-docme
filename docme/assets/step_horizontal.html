@@ -1,0 +1,26 @@
+<div class="row step">
+    <div class="col-6"><img src={{ step_screenshot }} class="img-fluid rounded" /></div>
+    <div class="col-6">
+        <span class="align-middle">
+            <p class=title>{{ step.capitalized_name }}</p>
+            <p class="step-description">{{ step.text or ' ' }}</p>
+            {% if step.with_form_example %}
+                <ul>
+                    {% for dados in step.table %}
+                        <li>
+                            Preencha {{ dados[step.table_label] }} com {{ dados[step.table_value] }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% elif step.with_data_example %}
+                <ul>
+                    {% for dados in step.table %}
+                    <li>
+                        {{ dados.cells[0] }}
+                    </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </span>
+    </div>
+</div>

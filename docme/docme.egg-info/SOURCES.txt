@@ -1,0 +1,6 @@
+README.md
+setup.py
+docme/docme.egg-info/PKG-INFO
+docme/docme.egg-info/SOURCES.txt
+docme/docme.egg-info/dependency_links.txt
+docme/docme.egg-info/top_level.txt

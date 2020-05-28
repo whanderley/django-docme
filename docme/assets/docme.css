@@ -1,0 +1,19 @@
+.step-description, .feature-description, .scenario-description {
+    font-size: 12pt;
+    color: #555;
+}
+.feature-description, .scenario-description {
+    margin-left: 20px;
+}
+.step {
+    background: #ECECEC;
+    padding: 30px 10px 0px 10px;
+    border-radius: 10px;
+}
+.step .title{
+    font-size: 14pt;
+    text-align: center;
+}
+.step img{
+    margin-bottom: 30px;
+}
