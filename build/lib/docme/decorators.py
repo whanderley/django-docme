@@ -165,6 +165,13 @@ class BeforeStepDecorator(EnvironmentFunctionDecorator):
                 if ':value' in h:
                     step.table_value = h.replace(':value', '')
                     step.table.__dict__['headings'][i] = h.replace(':value', '')
+        if hasattr(step, "documented_step") and step.documented_step:
+            os.makedirs(self.image_path(step), exist_ok=True)
+            image_path = context.browser.screenshot(
+                self.image_path(step), full=True)
+            setattr(step, 'capitalized_name', step.name.capitalize())
+            context.html_documentation.add_step(image_path, step, context)
+            setattr(step, "documented_step", False)
         if hasattr(step, "auto_tour") and step.auto_tour:
             if urlparse(context.browser.url).query:
                 path = urlparse(context.browser.url).path + "/?" + urlparse(context.browser.url).query
@@ -173,6 +180,8 @@ class BeforeStepDecorator(EnvironmentFunctionDecorator):
             context.json_documentation.add_step(path.replace('//', '/'), step)
         self.function(context, step)
 
+    def image_path(self, step):
+        return os.path.join(step.dump_dir, 'images/')
     def dump_path(self, step):
         return os.path.join(step.dump_dir, 'dump_before.sql')
     
@@ -186,15 +195,6 @@ class AfterStepDecorator(EnvironmentFunctionDecorator):
 
     def __call__(self, context, step):
         if hasattr(step, "documented_step") and step.documented_step:
-            os.makedirs(self.image_path(step), exist_ok=True)
-            image_path = context.browser.screenshot(
-                self.image_path(step), full=True)
-            setattr(step, 'capitalized_name', step.name.capitalize())
-            context.html_documentation.add_step(image_path, step, context)
-            setattr(step, "documented_step", False)
             context.html_documentation.ln()
             context.html_documentation.ln()
         self.function(context, step)
-
-    def image_path(self, step):
-        return os.path.join(step.dump_dir, 'images/')
