@@ -1,5 +1,6 @@
 import os
 import sys
+import shutil
 from django.conf import settings
 from urllib.parse import urlparse
 from django.core.management import call_command
@@ -28,6 +29,7 @@ class EnvironmentFunctionDecorator(object):
 class BeforeAllDecorator(EnvironmentFunctionDecorator):
 
     def __call__(self, context):
+        shutil.rmtree(self.docs_dir(), ignore_errors=True)
         setattr(context, 'html_documentation', self.create_html_doc())
         if 'json' in self.options['output-formats']:
             setattr(context, 'json_documentation', self.create_json_doc())
