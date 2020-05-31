@@ -7,7 +7,7 @@ from docme.html_documentation import HtmlDocumentation
 from docme.json_documentation import JsonDocumentation
 from functools import reduce
 import inspect
-
+import types
 
 class EnvironmentFunctionDecorator(object):
 
@@ -95,19 +95,19 @@ class BeforeScenarioDecorator(EnvironmentFunctionDecorator):
             for i, step in enumerate(scenario.steps):
                 setattr(step, 'documented_step', False)
                 setattr(step, 'scenario', scenario)
+                setattr(step, 'no_title', ':notitle' in step.name)
                 if ':docme' in step.name:
-                    setattr(step, 'no_title', ':notitle' in step.name)
                     setattr(step, 'vertical', ':vertical' in step.name)
                     setattr(step, 'documented_step', True)
                     setattr(step, 'with_form_example', ":withformexample" in step.name)
                     setattr(step, 'with_data_example', ":withdataexample" in step.name)
-
                     setattr(step, 'break_page', i % 2 == 0)
                 if i == 0:
                     setattr(step, 'dump_before', scenario.dumpme and scenario.before)
                 setattr(step, 'dump_dir',
                         self.dump_dir(scenario))
                 setattr(step, 'name', self._clear_name(step.name))
+                step.title = "" if step.no_title else step.name.capitalize()
 
 
         self.function(context, scenario)
@@ -169,7 +169,7 @@ class BeforeStepDecorator(EnvironmentFunctionDecorator):
             os.makedirs(self.image_path(step), exist_ok=True)
             image_path = context.browser.screenshot(
                 self.image_path(step), full=True)
-            setattr(step, 'capitalized_name', step.name.capitalize())
+            # setattr(step, 'capitalized_name', step.name.capitalize())
             context.html_documentation.add_step(image_path, step, context)
             setattr(step, "documented_step", False)
         if hasattr(step, "auto_tour") and step.auto_tour:

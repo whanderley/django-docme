@@ -34,13 +34,13 @@ class JsonDocumentation(object):
         if current_path in self.json[self.app_name][self.atual_feature]['scenarios'][self.atual_scenario]['steps']:
             self.json[self.app_name][self.atual_feature]['scenarios'][self.atual_scenario]['steps'][current_path].append(
                 {
-                    "title": step.name,
+                    "title": step.title,
                     "description": step.text or '',
                 }
             )
         else:
             self.json[self.app_name][self.atual_feature]['scenarios'][self.atual_scenario]['steps'][current_path] = [{
-                    "title": step.name,
+                    "title": step.title,
                     "description": step.text or '',
                 }]
         self.json[self.app_name][self.atual_feature]['scenarios'][self.atual_scenario][
