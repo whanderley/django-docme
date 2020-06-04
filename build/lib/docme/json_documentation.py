@@ -13,14 +13,14 @@ class JsonDocumentation(object):
         
     def add_feature(self, feature):
         self.json[self.app_name][feature.name] = {
-            'description': feature.description and feature.description[0],
+            'description': feature.text_description and feature.text_description,
             'scenarios': {},
         } 
         self.atual_feature = feature.name
 
     def add_scenario(self, scenario, fixtures):
         self.json[self.app_name][self.atual_feature]['scenarios'][scenario.name] = {
-            'description': (scenario.description and scenario.description[0]) or '',
+            'description': (scenario.text_description and scenario.text_description) or '',
             'fixtures': fixtures,
             'steps': {}
         }

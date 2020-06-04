@@ -59,4 +59,3 @@ As can be seen in the example, to document tables steps it is necessary to add t
 column with the field name, using the flag :label and the column with the field value,
 using the flag :value.
 
- 

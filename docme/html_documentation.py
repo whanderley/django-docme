@@ -40,7 +40,7 @@ class HtmlDocumentation(object):
         t = Template(feature_string)
         self.string += t.substitute(
             feature_title=feature.name,
-            feature_description=((feature.description and feature.description[0]) or ' ')
+            feature_description=((feature.text_description and feature.text_description) or ' ')
         )
  
     def add_scenario(self, scenario):
@@ -53,7 +53,7 @@ class HtmlDocumentation(object):
         t = Template(scenario_string)
         self.string += t.substitute(
             scenario_title=scenario.name,
-            scenario_description=((scenario.description and scenario.description[0]) or ' ')
+            scenario_description=((scenario.text_description and scenario.text_description) or ' ')
         )
 
     def add_examples_list(self, context):

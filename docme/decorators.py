@@ -25,6 +25,8 @@ class EnvironmentFunctionDecorator(object):
                                                               ":dumpme", ":notitle", ":vertical",
                                                               ":withformexample", ":autotour", ":withdataexample"])
 
+    def text_description(self, element):
+        return "<br/>".join(element.description)
 
 class BeforeAllDecorator(EnvironmentFunctionDecorator):
 
@@ -38,6 +40,7 @@ class BeforeAllDecorator(EnvironmentFunctionDecorator):
             feature.auto_tour = ":autotour" in feature.name
             setattr(feature, 'name', self._clear_name(feature.name))
             setattr(feature, 'index', i)
+            setattr(feature, 'text_description', self.text_description(feature))
         self.function(context)
 
     def create_html_doc(self):
@@ -70,6 +73,9 @@ class BeforeFeatureDecorator(EnvironmentFunctionDecorator):
             setattr(scenario, "auto_tour", ":autotour" in scenario.name)
             setattr(scenario, "name", self._clear_name(scenario.name))
             setattr(scenario, "index", i)
+            setattr(scenario, 'text_description',
+                    self.text_description(scenario))
+
         self.function(context, feature)
 
 
