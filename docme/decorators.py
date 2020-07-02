@@ -23,7 +23,8 @@ class EnvironmentFunctionDecorator(object):
     def _clear_name(self, text):
         return reduce(lambda t, param: t.replace(param, ""), [text, ":before", ":docme",
                                                               ":dumpme", ":notitle", ":vertical",
-                                                              ":withformexample", ":autotour", ":withdataexample"])
+                                                              ":withformexample", ":autotour",
+                                                               ":withdataexample", ":after"])
 
     def text_description(self, element):
         return "<br/>".join(element.description)
@@ -109,7 +110,8 @@ class BeforeScenarioDecorator(EnvironmentFunctionDecorator):
                     setattr(step, 'documented_step', True)
                     setattr(step, 'with_form_example', ":withformexample" in step.name)
                     setattr(step, 'with_data_example', ":withdataexample" in step.name)
-                    setattr(step, 'break_page', i % 2 == 0)
+                    setattr(step, 'after', ":after" in step.name)
+                    setattr(step, 'break_page', False)
                 if i == 0:
                     setattr(step, 'dump_before', scenario.dumpme and scenario.before)
                 setattr(step, 'dump_dir',
@@ -173,7 +175,7 @@ class BeforeStepDecorator(EnvironmentFunctionDecorator):
                 if ':value' in h:
                     step.table_value = h.replace(':value', '')
                     step.table.__dict__['headings'][i] = h.replace(':value', '')
-        if hasattr(step, "documented_step") and step.documented_step:
+        if hasattr(step, "documented_step") and step.documented_step and not step.after:
             os.makedirs(self.image_path(step), exist_ok=True)
             image_path = context.browser.screenshot(
                 self.image_path(step), full=True)
@@ -202,7 +204,14 @@ class BeforeStepDecorator(EnvironmentFunctionDecorator):
 class AfterStepDecorator(EnvironmentFunctionDecorator):
 
     def __call__(self, context, step):
-        if hasattr(step, "documented_step") and step.documented_step:
-            context.html_documentation.ln()
-            context.html_documentation.ln()
+        if hasattr(step, "documented_step") and step.documented_step and step.after:
+            os.makedirs(self.image_path(step), exist_ok=True)
+            image_path = context.browser.screenshot(
+                self.image_path(step), full=True)
+            # setattr(step, 'capitalized_name', step.name.capitalize())
+            context.html_documentation.add_step(image_path, step, context)
+            setattr(step, "documented_step", False)
         self.function(context, step)
+
+    def image_path(self, step):
+        return os.path.join(step.dump_dir, 'images/')

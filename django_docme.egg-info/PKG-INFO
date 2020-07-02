@@ -1,8 +1,8 @@
-Metadata-Version: 1.1
+Metadata-Version: 2.1
 Name: django-docme
-Version: 0.1
+Version: 0.1.1
 Summary: A Django app to generate documentation from behave tests.
-Home-page: https://www.example.com/
+Home-page: https://github.com/whanderley/django-docme
 Author: Whanderley Souza Freitas
 Author-email: whanderley.souza@iff.edu.br
 License: BSD-3-Clause  # Example license
@@ -74,11 +74,4 @@ Classifier: Framework :: Django
 Classifier: Intended Audience :: Developers
 Classifier: License :: OSI Approved :: BSD License
 Classifier: Operating System :: OS Independent
-Classifier: Programming Language :: Python
-Classifier: Programming Language :: Python :: 3
-Classifier: Programming Language :: Python :: 3 :: Only
-Classifier: Programming Language :: Python :: 3.6
-Classifier: Programming Language :: Python :: 3.7
-Classifier: Programming Language :: Python :: 3.8
-Classifier: Topic :: Internet :: WWW/HTTP
-Classifier: Topic :: Internet :: WWW/HTTP :: Dynamic Content
+Description-Content-Type: text/markdown
