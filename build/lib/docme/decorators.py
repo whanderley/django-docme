@@ -64,6 +64,8 @@ class BeforeFeatureDecorator(EnvironmentFunctionDecorator):
 
     def __call__(self, context, feature):
         if feature.docme:
+            if feature.index > 0:
+                context.html_documentation.new_page()
             context.html_documentation.add_feature(feature)
         if feature.auto_tour:
             context.json_documentation.add_feature(feature)
@@ -83,8 +85,6 @@ class BeforeFeatureDecorator(EnvironmentFunctionDecorator):
 class AfterFeatureDecorator(EnvironmentFunctionDecorator):
 
     def __call__(self, context, feature):
-        if feature.docme:
-            context.html_documentation.new_page()
         self.function(context, feature)
 
 
@@ -98,7 +98,8 @@ class BeforeScenarioDecorator(EnvironmentFunctionDecorator):
                 if i == 0:
                     setattr(step, 'dumpdata', True)
         if scenario.docme:
-            context.html_documentation.ln()
+            if scenario.index > 0:
+                context.html_documentation.new_page()
             context.html_documentation.add_scenario(scenario)
             context.html_documentation.hr()
             for i, step in enumerate(scenario.steps):
@@ -138,8 +139,6 @@ class AfterScenarioDecorator(EnvironmentFunctionDecorator):
                 settings.DATABASES['default']['NAME'],
                 self.dump_path(scenario).replace(' ', '\ '))
             os.system(command)
-        if scenario.docme:
-            context.html_documentation.new_page()
 
         self.function(context, scenario)
 

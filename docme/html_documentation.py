@@ -108,6 +108,10 @@ class HtmlDocumentation(object):
                         page-break-after: auto; /* 'always,' 'avoid,' 'left,' 'inherit,' or 'right' */
                         page-break-inside: avoid; /* or 'auto' */
                     }
+                    p.new_page {
+                        clear: both;
+                        page-break-after: always;
+                    }
                 }
              """ + css_string + "</style>"
         output_formats = self.user_options["output-formats"] if "output-formats" in\
