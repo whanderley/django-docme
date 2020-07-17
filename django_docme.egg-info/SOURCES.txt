@@ -17,6 +17,7 @@ docme/urls.py
 docme/views.py
 docme/assets/docme.css
 docme/assets/feature.html
+docme/assets/noscreenshot_step.html
 docme/assets/scenario.html
 docme/assets/step_horizontal.html
 docme/assets/step_vertical.html

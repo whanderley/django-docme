@@ -3,6 +3,7 @@ from jinja2 import Template as JinjaTemplate
 from string import Template
 import os
 from docme.output_formats import OutputFormat
+from bs4 import BeautifulSoup
 
 class HtmlDocumentation(object):
 
@@ -72,25 +73,33 @@ class HtmlDocumentation(object):
             self.string += "<p class=new_page></p>"
 
     def add_step(self, image_path, step, context):
-        if step.vertical:
-            if "step_vertical_html" in self.user_options:
-                step_string = open(self.user_options['step_vertical_html'], "r").read()
-            else:
-                step_string = resource_string(
-                "docme", "assets/step_vertical.html").decode('utf-8')
+        if step.no_screenshot:
+            step_string = resource_string(
+                "docme", "assets/noscreenshot_step.html").decode('utf-8')
+            t = JinjaTemplate(step_string)
+            step_string = t.render(step=step)
+            atual_string = BeautifulSoup(self.string, 'html.parser')
+            atual_string.find_all(
+                class_="align-middle")[-1].append(BeautifulSoup(step_string, 'html.parser'))
+            self.string = str(atual_string)
         else:
-            if "step_horizontal_html" in self.user_options:
-                step_string = open(
-                    self.user_options['step_horizontal_html'], "r").read()
+            if step.vertical:
+                if "step_vertical_html" in self.user_options:
+                    step_string = open(self.user_options['step_vertical_html'], "r").read()
+                else:
+                    step_string = resource_string(
+                    "docme", "assets/step_vertical.html").decode('utf-8')
             else:
-                step_string = resource_string(
-                    "docme", "assets/step_horizontal.html").decode('utf-8')
-        t = JinjaTemplate(step_string)
-        self.string += t.render(step_screenshot=image_path,
-                                step=step,
-                               )
-        if step.break_page:
-            self.new_page()
+                if "step_horizontal_html" in self.user_options:
+                    step_string = open(
+                        self.user_options['step_horizontal_html'], "r").read()
+                else:
+                    step_string = resource_string(
+                        "docme", "assets/step_horizontal.html").decode('utf-8')
+            t = JinjaTemplate(step_string)
+            self.string += t.render(step_screenshot=image_path,
+                                    step=step,
+                                )
 
     def save(self, docs_dir):
         if "css_file" in self.user_options:
@@ -118,3 +127,4 @@ class HtmlDocumentation(object):
                              self.user_options else ['pdf']
         OutputFormat.save(self.string, output_formats, docs_dir)
            
+    # def _noscheenshot_step_string(self, step):

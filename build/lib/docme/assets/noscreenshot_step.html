@@ -1,0 +1,19 @@
+<p class=title>{{ step.title }}</p>
+<p class="step-description">{{ step.text or ' ' }}</p>
+{% if step.with_form_example %}
+<ul>
+    {% for dados in step.table %}
+    <li>
+        Preencha {{ dados[step.table_label] }} com {{ dados[step.table_value] }}
+    </li>
+    {% endfor %}
+</ul>
+{% elif step.with_data_example %}
+<ul>
+    {% for dados in step.table %}
+    <li>
+        {{ dados.cells[0] }}
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}

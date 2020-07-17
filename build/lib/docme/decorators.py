@@ -24,7 +24,7 @@ class EnvironmentFunctionDecorator(object):
         return reduce(lambda t, param: t.replace(param, ""), [text, ":before", ":docme",
                                                               ":dumpme", ":notitle", ":vertical",
                                                               ":withformexample", ":autotour",
-                                                               ":withdataexample", ":after"])
+                                                               ":withdataexample", ":after", ":noscreenshot"])
 
     def text_description(self, element):
         return "<br/>".join(element.description)
@@ -112,6 +112,8 @@ class BeforeScenarioDecorator(EnvironmentFunctionDecorator):
                     setattr(step, 'with_form_example', ":withformexample" in step.name)
                     setattr(step, 'with_data_example', ":withdataexample" in step.name)
                     setattr(step, 'after', ":after" in step.name)
+                    setattr(step, 'no_screenshot',
+                            ":noscreenshot" in step.name)
                     setattr(step, 'break_page', False)
                 if i == 0:
                     setattr(step, 'dump_before', scenario.dumpme and scenario.before)
@@ -161,11 +163,6 @@ class BeforeStepDecorator(EnvironmentFunctionDecorator):
                 settings.DATABASES['default']['NAME'],
                 self.dump_path(step).replace(' ', '\ '))
             os.system(command)
-        # if hasattr(step, "dumpdat a") and step.dumpdata:
-        #     os.makedirs(self.dumpdata_dir(), exist_ok=True)
-        #     with open(self.dumpdata_path(step), 'w+') as f:
-        #         call_command('dumpdata', stdout=f)
-        #         setattr(step, 'dumpdata_path', self.dumpdata_path(step))
         if hasattr(step, "documented_step") and step.documented_step and step.with_form_example:
             for i, h in enumerate(step.table.headings):
                 if ':label' in h:
@@ -178,7 +175,6 @@ class BeforeStepDecorator(EnvironmentFunctionDecorator):
             os.makedirs(self.image_path(step), exist_ok=True)
             image_path = context.browser.screenshot(
                 self.image_path(step), full=True)
-            # setattr(step, 'capitalized_name', step.name.capitalize())
             context.html_documentation.add_step(image_path, step, context)
             setattr(step, "documented_step", False)
         if hasattr(step, "auto_tour") and step.auto_tour:
@@ -199,6 +195,7 @@ class BeforeStepDecorator(EnvironmentFunctionDecorator):
     
     def dumpdata_dir(self):
         return os.path.join(self.docs_dir(), ".dumpsdatas")
+        
 
 class AfterStepDecorator(EnvironmentFunctionDecorator):
 
