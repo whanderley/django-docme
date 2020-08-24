@@ -2,6 +2,7 @@ from .decorators import *
 
 
 def auto_doc(dict_functions, app_name, options={}):
+    import ipdb; ipdb.set_trace()
     to_decorate_functions = ["before_all", "after_all", "before_feature",
                              "after_feature", "before_scenario", "after_scenario",
                              "before_step", "after_step"]
