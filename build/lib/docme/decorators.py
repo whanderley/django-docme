@@ -32,17 +32,26 @@ class EnvironmentFunctionDecorator(object):
 class BeforeAllDecorator(EnvironmentFunctionDecorator):
 
     def __call__(self, context):
-        shutil.rmtree(self.docs_dir(), ignore_errors=True)
-        setattr(context, 'html_documentation', self.create_html_doc())
-        if 'json' in self.options['output-formats']:
-            setattr(context, 'json_documentation', self.create_json_doc())
-        for i, feature in enumerate(context._runner.features):
-            feature.docme = ":docme" in feature.name
-            feature.auto_tour = ":autotour" in feature.name
-            setattr(feature, 'name', self._clear_name(feature.name))
-            setattr(feature, 'index', i)
-            setattr(feature, 'text_description', self.text_description(feature))
-        self.function(context)
+        if hasattr(settings, 'AUTO_DOC') and settings.AUTO_DOC:
+            shutil.rmtree(self.docs_dir(), ignore_errors=True)
+            setattr(context, 'html_documentation', self.create_html_doc())
+            if 'json' in self.options['output-formats']:
+                setattr(context, 'json_documentation', self.create_json_doc())
+            for i, feature in enumerate(context._runner.features):
+                feature.docme = ":docme" in feature.name
+                feature.auto_tour = ":autotour" in feature.name
+                setattr(feature, 'name', self._clear_name(feature.name))
+                setattr(feature, 'index', i)
+                setattr(feature, 'text_description', self.text_description(feature))
+            self.function(context)
+        else:
+            for feature in context._runner.features:
+                setattr(feature, 'name', self._clear_name(feature.name))
+                for scenario in feature.scenarios:
+                    setattr(scenario, "name", self._clear_name(scenario.name))
+                    for step in scenario.steps:
+                        setattr(step, 'name', self._clear_name(step.name))
+
 
     def create_html_doc(self):
         os.makedirs(self.docs_dir(), exist_ok=True)
