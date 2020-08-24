@@ -97,6 +97,7 @@ class BeforeScenarioDecorator(EnvironmentFunctionDecorator):
                 setattr(step, 'auto_tour', ':autotour' in step.name)
                 if i == 0:
                     setattr(step, 'dumpdata', True)
+        import ipdb; ipdb.set_trace()
         if scenario.docme:
             if scenario.index > 0:
                 context.html_documentation.new_page()
