@@ -4,11 +4,12 @@ from django.conf import settings
 
 def auto_doc(dict_functions, app_name, options={}):
     if hasattr(settings, 'AUTO_DOC') and settings.AUTO_DOC:
-        to_decorate_functions = ["before_all"]
-    else:
         to_decorate_functions = ["before_all", "after_all", "before_feature",
-                                "after_feature", "before_scenario", "after_scenario",
-                                "before_step", "after_step"]
+                                 "after_feature", "before_scenario", "after_scenario",
+                                 "before_step", "after_step"]
+    else:
+        to_decorate_functions = ["before_all"]
+
     for func in to_decorate_functions:
         decorator = eval(decorator_for_function(func))
         if func in dict_functions:

@@ -46,7 +46,6 @@ class BeforeAllDecorator(EnvironmentFunctionDecorator):
                 setattr(feature, 'index', i)
                 setattr(feature, 'text_description',
                         self.text_description(feature))
-            self.function(context)
         else:
             for feature in context._runner.features:
                 setattr(feature, 'name', self._clear_name(feature.name))
@@ -54,6 +53,7 @@ class BeforeAllDecorator(EnvironmentFunctionDecorator):
                     setattr(scenario, "name", self._clear_name(scenario.name))
                     for step in scenario.steps:
                         setattr(step, 'name', self._clear_name(step.name))
+        self.function(context)
 
     def create_html_doc(self):
         os.makedirs(self.docs_dir(), exist_ok=True)

@@ -55,7 +55,7 @@ class HtmlDocumentation(object):
         t = Template(scenario_string)
         self.string += t.substitute(
             scenario_title=scenario.name,
-            scenario_keyword=secenario.keyword,
+            scenario_keyword=scenario.keyword,
             scenario_description=((scenario.text_description and scenario.text_description) or ' ')
         )
 

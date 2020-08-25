@@ -10,6 +10,7 @@ from functools import reduce
 import inspect
 import types
 
+
 class EnvironmentFunctionDecorator(object):
 
     def __init__(self, func, options, app_name):
@@ -24,10 +25,11 @@ class EnvironmentFunctionDecorator(object):
         return reduce(lambda t, param: t.replace(param, ""), [text, ":before", ":docme",
                                                               ":dumpme", ":notitle", ":vertical",
                                                               ":withformexample", ":autotour",
-                                                               ":withdataexample", ":after", ":noscreenshot"])
+                                                              ":withdataexample", ":after", ":noscreenshot"])
 
     def text_description(self, element):
         return "<br/>".join(element.description)
+
 
 class BeforeAllDecorator(EnvironmentFunctionDecorator):
 
@@ -42,8 +44,8 @@ class BeforeAllDecorator(EnvironmentFunctionDecorator):
                 feature.auto_tour = ":autotour" in feature.name
                 setattr(feature, 'name', self._clear_name(feature.name))
                 setattr(feature, 'index', i)
-                setattr(feature, 'text_description', self.text_description(feature))
-            self.function(context)
+                setattr(feature, 'text_description',
+                        self.text_description(feature))
         else:
             for feature in context._runner.features:
                 setattr(feature, 'name', self._clear_name(feature.name))
@@ -51,7 +53,7 @@ class BeforeAllDecorator(EnvironmentFunctionDecorator):
                     setattr(scenario, "name", self._clear_name(scenario.name))
                     for step in scenario.steps:
                         setattr(step, 'name', self._clear_name(step.name))
-
+        self.function(context)
 
     def create_html_doc(self):
         os.makedirs(self.docs_dir(), exist_ok=True)
@@ -60,6 +62,7 @@ class BeforeAllDecorator(EnvironmentFunctionDecorator):
     def create_json_doc(self):
         os.makedirs(self.docs_dir(), exist_ok=True)
         return JsonDocumentation(self.options, self.app_name)
+
 
 class AfterAllDecorator(EnvironmentFunctionDecorator):
 
@@ -118,19 +121,21 @@ class BeforeScenarioDecorator(EnvironmentFunctionDecorator):
                 if ':docme' in step.name:
                     setattr(step, 'vertical', ':vertical' in step.name)
                     setattr(step, 'documented_step', True)
-                    setattr(step, 'with_form_example', ":withformexample" in step.name)
-                    setattr(step, 'with_data_example', ":withdataexample" in step.name)
+                    setattr(step, 'with_form_example',
+                            ":withformexample" in step.name)
+                    setattr(step, 'with_data_example',
+                            ":withdataexample" in step.name)
                     setattr(step, 'after', ":after" in step.name)
                     setattr(step, 'no_screenshot',
                             ":noscreenshot" in step.name)
                     setattr(step, 'break_page', False)
                 if i == 0:
-                    setattr(step, 'dump_before', scenario.dumpme and scenario.before)
+                    setattr(step, 'dump_before',
+                            scenario.dumpme and scenario.before)
                 setattr(step, 'dump_dir',
                         self.dump_dir(scenario))
                 setattr(step, 'name', self._clear_name(step.name))
                 step.title = "" if step.no_title else step.name.capitalize()
-
 
         self.function(context, scenario)
 
@@ -176,10 +181,12 @@ class BeforeStepDecorator(EnvironmentFunctionDecorator):
             for i, h in enumerate(step.table.headings):
                 if ':label' in h:
                     step.table_label = h.replace(':label', '')
-                    step.table.__dict__['headings'][i] = h.replace(':label', '')
+                    step.table.__dict__[
+                        'headings'][i] = h.replace(':label', '')
                 if ':value' in h:
                     step.table_value = h.replace(':value', '')
-                    step.table.__dict__['headings'][i] = h.replace(':value', '')
+                    step.table.__dict__[
+                        'headings'][i] = h.replace(':value', '')
         if hasattr(step, "documented_step") and step.documented_step and not step.after:
             os.makedirs(self.image_path(step), exist_ok=True)
             image_path = context.browser.screenshot(
@@ -188,7 +195,8 @@ class BeforeStepDecorator(EnvironmentFunctionDecorator):
             setattr(step, "documented_step", False)
         if hasattr(step, "auto_tour") and step.auto_tour:
             if urlparse(context.browser.url).query:
-                path = urlparse(context.browser.url).path + "/?" + urlparse(context.browser.url).query
+                path = urlparse(context.browser.url).path + \
+                    "/?" + urlparse(context.browser.url).query
             else:
                 path = urlparse(context.browser.url).path
             context.json_documentation.add_step(path.replace('//', '/'), step)
@@ -196,15 +204,16 @@ class BeforeStepDecorator(EnvironmentFunctionDecorator):
 
     def image_path(self, step):
         return os.path.join(step.dump_dir, 'images/')
+
     def dump_path(self, step):
         return os.path.join(step.dump_dir, 'dump_before.sql')
-    
+
     def dumpdata_path(self, step):
         return os.path.join(self.dumpdata_dir(), "{}_{}.json".format(step.scenario.feature.index, step.scenario.index))
-    
+
     def dumpdata_dir(self):
         return os.path.join(self.docs_dir(), ".dumpsdatas")
-        
+
 
 class AfterStepDecorator(EnvironmentFunctionDecorator):
 
