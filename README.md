@@ -3,6 +3,12 @@
 Django-docme is a python library to generate user documentation automatically. For that it uses the behavior tests written with Behave.
 
 ## Basic usage
+Add this to settings.py
+'''
+   AUTO_DOC = True
+'''
+This flag controls the generation of documentation
+
 On environment.py, write like this:
 ```python
 #imports
