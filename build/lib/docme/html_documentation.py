@@ -41,6 +41,7 @@ class HtmlDocumentation(object):
         t = Template(feature_string)
         self.string += t.substitute(
             feature_title=feature.name,
+            feature_id="feature{}".format(feature.index),
             feature_keyword=feature.keyword,
             feature_description=((feature.text_description and feature.text_description) or ' ')
         )
@@ -54,10 +55,30 @@ class HtmlDocumentation(object):
                 "docme", "assets/scenario.html").decode('utf-8')
         t = Template(scenario_string)
         self.string += t.substitute(
-            scenario_title=scenario.name,
-            scenario_keyword=scenario.keyword,
-            scenario_description=((scenario.text_description and scenario.text_description) or ' ')
+            scenario_title = scenario.name,
+            scenario_id = "scenario{}_feature{}".format(scenario.index, scenario.feature.index),
+            scenario_keyword = scenario.keyword,
+            scenario_description = ((scenario.text_description and scenario.text_description) or ' ')
         )
+    def add_summary(self, context):
+        feature_count = 1
+        self.string += "<dl>"
+        for feature in [feature for feature in context._runner.features if feature.docme]:
+            self.string += """<dt><a href="#feature{}" target="_self">
+                                {} - {} 
+                            </a></dt>
+                        """.format(feature.index, feature_count, feature.name)
+            scenario_count = 1
+            for i, scenario in enumerate([scenario for scenario in feature.scenarios if ":docme" in scenario.name]):
+                self.string += """<dd><a href="#scenario{}_feature{}" target="_self">
+                                {}.{} - {} 
+                            </a></dd>
+                        """.format(i, scenario.feature.index, feature_count, scenario_count,
+                                scenario.name.replace(":docme", ""))
+                scenario_count += 1
+            feature_count += 1
+        self.string += "</dl>"
+
 
     def add_examples_list(self, context):
         if context.table:

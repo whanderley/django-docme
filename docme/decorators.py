@@ -46,6 +46,7 @@ class BeforeAllDecorator(EnvironmentFunctionDecorator):
                 setattr(feature, 'index', i)
                 setattr(feature, 'text_description',
                         self.text_description(feature))
+            context.html_documentation.add_summary(context)
         else:
             for feature in context._runner.features:
                 setattr(feature, 'name', self._clear_name(feature.name))
@@ -189,8 +190,10 @@ class BeforeStepDecorator(EnvironmentFunctionDecorator):
                         'headings'][i] = h.replace(':value', '')
         if hasattr(step, "documented_step") and step.documented_step and not step.after:
             os.makedirs(self.image_path(step), exist_ok=True)
-            image_path = context.browser.screenshot(
-                self.image_path(step), full=True)
+            image_path = ''
+            if not step.no_screenshot:
+                image_path = context.browser.screenshot(
+                    self.image_path(step), full=True)
             context.html_documentation.add_step(image_path, step, context)
             setattr(step, "documented_step", False)
         if hasattr(step, "auto_tour") and step.auto_tour:
