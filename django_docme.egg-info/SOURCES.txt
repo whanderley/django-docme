@@ -5,6 +5,7 @@ setup.py
 django_docme.egg-info/PKG-INFO
 django_docme.egg-info/SOURCES.txt
 django_docme.egg-info/dependency_links.txt
+django_docme.egg-info/requires.txt
 django_docme.egg-info/top_level.txt
 docme/__init__.py
 docme/apps.py
