@@ -193,7 +193,7 @@ class BeforeStepDecorator(EnvironmentFunctionDecorator):
             image_path = ''
             if not step.no_screenshot:
                 image_path = context.browser.screenshot(
-                    self.image_path(step), full=True)
+                    self.image_path(step))
             context.html_documentation.add_step(image_path, step, context)
             setattr(step, "documented_step", False)
         if hasattr(step, "auto_tour") and step.auto_tour:
@@ -224,7 +224,7 @@ class AfterStepDecorator(EnvironmentFunctionDecorator):
         if hasattr(step, "documented_step") and step.documented_step and step.after:
             os.makedirs(self.image_path(step), exist_ok=True)
             image_path = context.browser.screenshot(
-                self.image_path(step), full=True)
+                self.image_path(step))
             # setattr(step, 'capitalized_name', step.name.capitalize())
             context.html_documentation.add_step(image_path, step, context)
             setattr(step, "documented_step", False)
