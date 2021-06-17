@@ -32,6 +32,7 @@ class PdfFormat(OutputFormat):
             'footer-line': '',
             'footer-font-size': '7',
             '--footer-right': 'right footer',
+            'enable-local-file-access': None,
 
             'custom-header': [
                 ('Accept-Encoding', 'gzip')
