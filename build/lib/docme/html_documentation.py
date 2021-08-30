@@ -1,4 +1,5 @@
 from pkg_resources import resource_string
+import base64
 from jinja2 import Template as JinjaTemplate
 from string import Template
 import os
@@ -120,7 +121,8 @@ class HtmlDocumentation(object):
                     step_string = resource_string(
                         "docme", "assets/step_horizontal.html").decode('utf-8')
             t = JinjaTemplate(step_string)
-            self.string += t.render(step_screenshot=image_path,
+            base64_image = 'data:image/jpeg;base64,' +  base64.b64encode(open(image_path, 'rb').read()).decode()
+            self.string += t.render(step_screenshot_base64=base64_image,
                                     step=step,
                                 )
 

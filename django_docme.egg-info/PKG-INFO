@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: django-docme
-Version: 0.1.4
+Version: 0.1.5
 Summary: A Django app to generate documentation from behave tests.
 Home-page: https://github.com/whanderley/django-docme
 Author: Whanderley Souza Freitas

@@ -32,14 +32,14 @@ class PdfFormat(OutputFormat):
             'footer-line': '',
             'footer-font-size': '7',
             '--footer-right': 'right footer',
-
+            'enable-local-file-access': None,
             'custom-header': [
                 ('Accept-Encoding', 'gzip')
             ],
             'no-outline': None
         }
         path = os.path.join(self.docs_dir, "doc.pdf")
-        config = pdfkit.configuration(wkhtmltopdf='/usr/bin/wkhtmltopdf')
+        config = pdfkit.configuration()
         pdfkit.from_string(self.html_string,
                            path, configuration=config,
                            options=options)
